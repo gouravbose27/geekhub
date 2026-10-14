@@ -1,5 +1,33 @@
 <%- include('partials/header') %>
 <h1><%= profile.username %></h1>
+<section class="contributions">
+  <h2>Contributions</h2>
+  <p><strong><%= contributions.total %></strong> contribution<%= contributions.total === 1 ? '' : 's' %> in the last year</p>
+  <div
+    class="contribution-graph"
+    role="img"
+    aria-label="<%= contributions.total %> contributions in the last year"
+  >
+    <% contributions.weeks.forEach(function (week) { %>
+      <div class="contribution-week">
+        <% week.days.forEach(function (day) { %>
+          <span
+            class="contribution-day level-<%= day.level %>"
+            title="<%= day.count %> contributions on <%= day.date %>"
+            aria-label="<%= day.count %> contributions on <%= day.date %>"
+          ></span>
+        <% }) %>
+      </div>
+    <% }) %>
+  </div>
+  <div class="contribution-legend" aria-hidden="true">
+    <span>Less</span>
+    <% [0, 1, 2, 3, 4].forEach(function (level) { %>
+      <span class="contribution-day level-<%= level %>"></span>
+    <% }) %>
+    <span>More</span>
+  </div>
+</section>
 <h2>Repositories</h2>
 <%- include('partials/repo_list', { repos: repos }) %>
 <%- include('partials/footer') %>

@@ -177,6 +177,30 @@ export async function logCommits(gitDir: string, commit: string, skip: number, l
     });
 }
 
+export async function contributionDates(gitDir: string, authorEmail: string, since: Date): Promise<string[]> {
+  const target = authorEmail.toLowerCase();
+  let out: string;
+  try {
+    out = await text(gitDir, [
+      'log',
+      '--all',
+      `--since=${since.toISOString()}`,
+      '--format=%ae%x1f%aI%x1e',
+      '--',
+    ]);
+  } catch {
+    return [];
+  }
+  return out
+    .split('\x1e')
+    .map((r) => r.replace(/^\n/, ''))
+    .filter(Boolean)
+    .flatMap((r) => {
+      const [email, date] = r.split('\x1f');
+      return email?.toLowerCase() === target && date ? [date.slice(0, 10)] : [];
+    });
+}
+
 export interface CommitDetail {
   sha: string;
   parents: string[];

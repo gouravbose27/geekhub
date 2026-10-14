@@ -15,6 +15,7 @@ import {
   showCommit,
 } from '../git/cli';
 import { isOwner } from '../repos/permissions';
+import { userContributions } from '../repos/contributions';
 import { isMarkdownName, isReadmeName, MAX_README_BYTES, renderMarkdown } from '../repos/readme';
 import {
   RepoExistsError,
@@ -118,12 +119,17 @@ export function repoRouter(db: DB, opts: RepoRoutesOptions): Router {
     res.redirect(`/${encodeURIComponent(req.user!.username)}/${encodeURIComponent(name)}`);
   });
 
-  router.get('/:owner', (req, res) => {
-    const row = db.prepare('SELECT id, username FROM users WHERE username = ?').get(req.params.owner) as
-      | { id: number; username: string }
+  router.get('/:owner', async (req, res) => {
+    const row = db.prepare('SELECT id, username, email FROM users WHERE username = ?').get(req.params.owner) as
+      | { id: number; username: string; email: string }
       | undefined;
     if (!row) return notFound(res);
-    res.render('profile', { title: row.username, profile: row, repos: listOwnedRepos(db, row.id) });
+    res.render('profile', {
+      title: row.username,
+      profile: row,
+      contributions: await userContributions(db, opts.reposDir, row),
+      repos: listOwnedRepos(db, row.id),
+    });
   });
 
   router.get('/:owner/:repo', async (req, res) => {

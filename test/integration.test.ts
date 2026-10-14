@@ -15,8 +15,8 @@ let alice: ReturnType<TestEnv['addUser']>;
 let bob: ReturnType<TestEnv['addUser']>;
 let smallAlice: ReturnType<TestEnv['addUser']>;
 
-const urlFor = (e: TestEnv, owner: string, token?: string) =>
-  e.base.replace('http://', `http://${token ? `x:${token}@` : ''}`) + `/${owner}/demo.git`;
+const urlFor = (e: TestEnv, owner: string, token?: string, repo = 'demo') =>
+  e.base.replace('http://', `http://${token ? `x:${token}@` : ''}`) + `/${owner}/${repo}.git`;
 
 const dir = (name: string) => path.join(work, name);
 
@@ -49,7 +49,7 @@ describe('clone and push over HTTP', () => {
     await ok(git(['checkout', '-B', 'main'], { cwd: dir('a') }));
     fs.writeFileSync(path.join(dir('a'), 'hello.txt'), 'hello world\n');
     await ok(git(['add', '.'], { cwd: dir('a') }));
-    await ok(git(['commit', '-m', 'first commit'], { cwd: dir('a') }));
+    await ok(git(['-c', 'user.name=Alice', '-c', 'user.email=alice@example.com', 'commit', '-m', 'first commit'], { cwd: dir('a') }));
     await ok(git(['push', 'origin', 'main'], { cwd: dir('a') }));
   });
 
@@ -64,6 +64,21 @@ describe('clone and push over HTTP', () => {
     const commit = await (await c.req(`/alice/demo/commit/${sha}`)).text();
     assert.match(commit, /\+hello world/);
     assert.match(commit, /class="add"/);
+  });
+
+  it('shows a GitHub-style contribution graph on user profiles', async () => {
+    await createRepo(env.db, env.reposDir, alice, 'contrib', '');
+    await ok(git(['clone', urlFor(env, 'alice', alice.token, 'contrib'), dir('contrib')]));
+    fs.writeFileSync(path.join(dir('contrib'), 'note.txt'), 'profile contribution\n');
+    await ok(git(['add', '.'], { cwd: dir('contrib') }));
+    await ok(git(['-c', 'user.name=Alice', '-c', 'user.email=alice@example.com', 'commit', '-m', 'profile contribution'], { cwd: dir('contrib') }));
+    await ok(git(['push', 'origin', 'HEAD:main'], { cwd: dir('contrib') }));
+
+    const html = await (await env.client().req('/alice')).text();
+    assert.match(html, /class="contribution-graph"/);
+    assert.match(html, /[1-9]\d*<\/strong> contributions? in the last year/);
+    assert.match(html, /[1-9]\d* contributions on \d{4}-\d{2}-\d{2}/);
+    assert.match(html, /class="contribution-day level-[1-4]"/);
   });
 
   it('allows anonymous clone', async () => {

@@ -7,7 +7,9 @@ a:hover { text-decoration: underline; }
 .site-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 24px; background: #24292f; }
 .site-header a, .site-header button.link { color: #fff; }
 .site-header nav { display: flex; gap: 16px; align-items: center; }
-.brand { font-weight: 700; font-size: 18px; }
+.brand { font-weight: 700; font-size: 18px; letter-spacing: .12em; text-transform: uppercase; }
+main h1, main h2, main h3 { font-family: ui-monospace, Consolas, monospace; }
+main h1 { letter-spacing: -.02em; }
 main { max-width: 880px; margin: 24px auto; padding: 0 16px; }
 form.inline { display: inline; margin: 0; }
 .card { display: flex; flex-direction: column; gap: 12px; max-width: 360px; padding: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; }
@@ -31,11 +33,11 @@ body.home { color: #d9e2ff; background: radial-gradient(circle at 20% 10%, #1b14
 body.home::before { content: ""; position: fixed; inset: 0; pointer-events: none; background-image: linear-gradient(rgba(0,229,255,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,.06) 1px, transparent 1px); background-size: 48px 48px; mask-image: linear-gradient(#000 40%, transparent); -webkit-mask-image: linear-gradient(#000 40%, transparent); }
 body.home a { color: #00e5ff; }
 body.home .site-header { background: rgba(5,6,15,.7); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(0,229,255,.35); box-shadow: 0 0 24px rgba(0,229,255,.15); position: relative; }
-body.home .brand { letter-spacing: .12em; text-transform: uppercase; text-shadow: 0 0 10px #00e5ff; }
+body.home .brand { text-shadow: 0 0 10px #00e5ff; }
 body.home main { max-width: 1040px; position: relative; }
 .hero { display: grid; grid-template-columns: 1.2fr 1fr; gap: 32px; align-items: center; padding: 48px 0 32px; }
 .eyebrow { margin: 0 0 8px; font-family: ui-monospace, Consolas, monospace; color: #ff2bd6; letter-spacing: .1em; text-transform: uppercase; font-size: 13px; }
-.hero h1 { margin: 0; font-size: clamp(48px, 9vw, 88px); line-height: 1; letter-spacing: -.02em; color: #fff; text-shadow: 0 0 18px rgba(0,229,255,.6); }
+.hero h1 { margin: 0; font-family: system-ui, sans-serif; font-size: clamp(48px, 9vw, 88px); line-height: 1; letter-spacing: -.02em; color: #fff; text-shadow: 0 0 18px rgba(0,229,255,.6); }
 .hero h1 span { background: linear-gradient(90deg, #00e5ff, #ff2bd6); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: none; }
 .lead { font-size: 18px; color: #a9b7e6; max-width: 46ch; }
 .status { font-family: ui-monospace, Consolas, monospace; color: #7dffb3; }
@@ -84,6 +86,21 @@ body.home main { max-width: 1040px; position: relative; }
 .repo-list li { padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-bottom: 0; }
 .repo-list li:last-child { border-bottom: 1px solid var(--border); }
 .repo-list p { margin: 4px 0 0; opacity: .8; }
+.contributions { margin-bottom: 24px; padding: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; overflow-x: auto; }
+.contributions h2 { margin-top: 0; }
+.contribution-graph { display: flex; gap: 3px; align-items: flex-start; min-width: max-content; padding: 4px 0; }
+.contribution-week { display: grid; grid-template-rows: repeat(7, 11px); gap: 3px; }
+.contribution-day { display: inline-block; width: 11px; height: 11px; border-radius: 2px; background: #ebedf0; border: 1px solid rgba(27,31,36,.06); }
+.contribution-day.level-1 { background: #9be9a8; }
+.contribution-day.level-2 { background: #40c463; }
+.contribution-day.level-3 { background: #30a14e; }
+.contribution-day.level-4 { background: #216e39; }
+[data-theme="dark"] .contribution-day { background: #161b22; border-color: #30363d; }
+[data-theme="dark"] .contribution-day.level-1 { background: #0e4429; }
+[data-theme="dark"] .contribution-day.level-2 { background: #006d32; }
+[data-theme="dark"] .contribution-day.level-3 { background: #26a641; }
+[data-theme="dark"] .contribution-day.level-4 { background: #39d353; }
+.contribution-legend { display: flex; justify-content: flex-end; align-items: center; gap: 4px; min-width: max-content; margin-top: 8px; font-size: 12px; color: color-mix(in srgb, var(--fg) 70%, transparent); }
 .card.wide { max-width: none; margin-bottom: 16px; }
 .card.wide input { width: 100%; font-family: ui-monospace, Consolas, monospace; }
 a.button { display: inline-block; padding: 6px 14px; border-radius: 6px; background: #1f883d; color: #fff; }
