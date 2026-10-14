@@ -51,6 +51,17 @@ const MIGRATIONS: string[] = [
   CREATE INDEX idx_sessions_expires ON sessions(expires_at);
   CREATE INDEX idx_collaborators_user ON collaborators(user_id);
   `,
+  `
+  CREATE TABLE password_reset_tokens (
+    token_hash TEXT PRIMARY KEY,
+    user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    expires_at INTEGER NOT NULL,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
+  CREATE INDEX idx_password_reset_tokens_user ON password_reset_tokens(user_id);
+  CREATE INDEX idx_password_reset_tokens_expires ON password_reset_tokens(expires_at);
+  `,
 ];
 
 export function migrate(db: DB): void {

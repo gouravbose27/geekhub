@@ -31,6 +31,10 @@ export function findByLogin(db: DB, login: string): UserWithHash | undefined {
     .get(login, login) as UserWithHash | undefined;
 }
 
+export function updatePassword(db: DB, userId: number, passwordHash: string): void {
+  db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(passwordHash, userId);
+}
+
 export function isUniqueViolation(err: unknown): boolean {
   return (err as { code?: string })?.code === 'SQLITE_CONSTRAINT_UNIQUE';
 }

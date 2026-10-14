@@ -122,6 +122,67 @@ describe('auth', () => {
     stale.cookies.set('gh_session', token);
     assert.match(await (await stale.req('/')).text(), /Sign in/);
   });
+
+  it('resets a forgotten password with a one-time link', async () => {
+    const c = new Client();
+    await c.post('/signup', {
+      username: 'bob',
+      email: 'bob@example.com',
+      password: 'correct horse',
+      confirm: 'correct horse',
+    });
+    await c.post('/logout', {});
+
+    const requested = await c.post('/forgot-password', { login: 'bob@example.com' });
+    assert.equal(requested.status, 200);
+    const token = (await requested.text()).match(/\/reset-password\?token=([A-Za-z0-9_-]+)/)?.[1];
+    assert.ok(token);
+
+    const resetForm = await c.req(`/reset-password?token=${token}`);
+    assert.equal(resetForm.status, 200);
+    assert.match(await resetForm.text(), /Reset password/);
+
+    const reset = await c.post('/reset-password', {
+      token,
+      password: 'new correct horse',
+      confirm: 'new correct horse',
+    });
+    assert.equal(reset.status, 302);
+    assert.equal(reset.headers.get('location'), '/dashboard');
+
+    const oldLogin = await new Client().post('/login', { login: 'bob', password: 'correct horse', next: '/' });
+    assert.equal(oldLogin.status, 401);
+    const newLogin = await new Client().post('/login', { login: 'bob', password: 'new correct horse', next: '/' });
+    assert.equal(newLogin.status, 302);
+
+    const reuse = await c.post('/reset-password', {
+      token,
+      password: 'another password',
+      confirm: 'another password',
+    });
+    assert.equal(reuse.status, 400);
+  });
+
+  it('validates password reset input', async () => {
+    const c = new Client();
+    await c.post('/signup', {
+      username: 'carol',
+      email: 'carol@example.com',
+      password: 'correct horse',
+      confirm: 'correct horse',
+    });
+    await c.post('/logout', {});
+
+    const requested = await c.post('/forgot-password', { login: 'carol' });
+    const token = (await requested.text()).match(/\/reset-password\?token=([A-Za-z0-9_-]+)/)?.[1];
+    assert.ok(token);
+
+    const bad = await c.post('/reset-password', { token, password: 'short', confirm: 'different' });
+    assert.equal(bad.status, 400);
+    const html = await bad.text();
+    assert.match(html, /at least 8/);
+    assert.match(html, /do not match/);
+  });
 });
 
 describe('access tokens', () => {

@@ -3,12 +3,25 @@ import type { Response } from 'express';
 import rateLimit from 'express-rate-limit';
 import type { DB } from '../db';
 import { hashPassword, verifyDummy, verifyPassword } from '../auth/password';
-import { SESSION_COOKIE, SESSION_TTL_MS, createSession, deleteSession } from '../auth/sessions';
+import {
+  SESSION_COOKIE,
+  SESSION_TTL_MS,
+  createSession,
+  deleteSession,
+  deleteUserSessions,
+} from '../auth/sessions';
+import {
+  createPasswordResetToken,
+  deletePasswordResetToken,
+  deletePasswordResetTokensForUser,
+  getPasswordResetToken,
+} from '../auth/passwordReset';
 import {
   createUser,
   emailTaken,
   findByLogin,
   isUniqueViolation,
+  updatePassword,
   usernameTaken,
 } from '../auth/users';
 import { safeNext, validateEmail, validatePassword, validateUsername } from '../auth/validation';
@@ -113,6 +126,73 @@ export function authRouter(db: DB, opts: AuthRouterOptions): Router {
     }
     startSession(res, user.id);
     res.redirect(next);
+  });
+
+  router.get('/forgot-password', (req, res) => {
+    if (req.user) return res.redirect('/');
+    res.render('forgot_password', { title: 'Forgot password', message: null, resetUrl: null, form: {} });
+  });
+
+  router.post('/forgot-password', limiter(5, 60 * 60 * 1000), (req, res) => {
+    if (req.user) return res.redirect('/');
+    const login = str(req.body.login).trim();
+    const user = login ? findByLogin(db, login) : undefined;
+    const token = user ? createPasswordResetToken(db, user.id) : null;
+
+    res.render('forgot_password', {
+      title: 'Forgot password',
+      message: 'If the account exists, a password reset link has been prepared.',
+      resetUrl: token ? `/reset-password?token=${encodeURIComponent(token)}` : null,
+      form: { login },
+    });
+  });
+
+  router.get('/reset-password', (req, res) => {
+    const token = str(req.query.token);
+    const reset = getPasswordResetToken(db, token);
+    res.render('reset_password', {
+      title: 'Reset password',
+      error: reset ? null : 'This password reset link is invalid or has expired.',
+      token: reset ? token : '',
+    });
+  });
+
+  router.post('/reset-password', limiter(10, 15 * 60 * 1000), async (req, res) => {
+    const token = str(req.body.token);
+    const password = str(req.body.password);
+    const confirm = str(req.body.confirm);
+    const reset = getPasswordResetToken(db, token);
+
+    if (!reset) {
+      return res.status(400).render('reset_password', {
+        title: 'Reset password',
+        error: 'This password reset link is invalid or has expired.',
+        token: '',
+      });
+    }
+
+    const errors = [
+      validatePassword(password),
+      password !== confirm ? 'Passwords do not match.' : null,
+    ].filter((e): e is string => e !== null);
+
+    if (errors.length) {
+      return res.status(400).render('reset_password', {
+        title: 'Reset password',
+        error: errors.join(' '),
+        token,
+      });
+    }
+
+    const passwordHash = await hashPassword(password);
+    db.transaction(() => {
+      updatePassword(db, reset.user_id, passwordHash);
+      deletePasswordResetTokensForUser(db, reset.user_id);
+      deletePasswordResetToken(db, reset.token_hash);
+      deleteUserSessions(db, reset.user_id);
+    })();
+    startSession(res, reset.user_id);
+    res.redirect('/dashboard');
   });
 
   router.post('/logout', (req, res) => {

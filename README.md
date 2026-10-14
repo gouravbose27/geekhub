@@ -39,3 +39,4 @@ Configuration (environment variables):
 4. Anyone can browse, view history and diffs, and clone without signing in.
 5. User profile pages show a GitHub-style contribution graph for commits authored with the user's email address.
 6. The owner adds collaborators (push access) and can delete the repository from the repo's Settings tab.
+7. If you forget your password, use `/forgot-password` from the sign-in page to create a one-time reset link.
