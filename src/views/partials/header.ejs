@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %> · GeekHub</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/theme.js"></script>
+</head>
+<body<% if (locals.bodyClass) { %> class="<%= bodyClass %>"<% } %>>
+<header class="site-header">
+  <a class="brand" href="/">GeekHub</a>
+  <nav>
+    <button type="button" id="theme-toggle" class="theme-toggle">Dark</button>
+    <% if (locals.user) { %>
+      <a href="/settings/tokens"><%= user.username %></a>
+      <form method="post" action="/logout" class="inline">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <button type="submit" class="link">Sign out</button>
+      </form>
+    <% } else { %>
+      <a href="/login">Sign in</a>
+      <a href="/signup">Sign up</a>
+    <% } %>
+  </nav>
+</header>
+<main>

@@ -1,0 +1,44 @@
+<%- include('partials/header') %>
+<h1>Personal access tokens</h1>
+<p>Use a token as the password when pushing over HTTP. The username can be anything.</p>
+
+<% if (newToken) { %>
+  <div class="alert success">
+    <p>Copy your new token now. It will not be shown again.</p>
+    <code class="token"><%= newToken %></code>
+  </div>
+<% } %>
+<% if (error) { %><div class="alert error"><%= error %></div><% } %>
+
+<form method="post" action="/settings/tokens" class="card">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <label>Token name
+    <input name="name" required maxlength="100" placeholder="e.g. laptop">
+  </label>
+  <button type="submit">Generate token</button>
+</form>
+
+<h2>Your tokens</h2>
+<% if (!tokens.length) { %>
+  <p>No tokens yet.</p>
+<% } else { %>
+  <table>
+    <thead><tr><th>Name</th><th>Created</th><th>Last used</th><th></th></tr></thead>
+    <tbody>
+      <% tokens.forEach(function (t) { %>
+        <tr>
+          <td><%= t.name %></td>
+          <td><%= t.created_at %></td>
+          <td><%= t.last_used_at || 'Never' %></td>
+          <td>
+            <form method="post" action="/settings/tokens/<%= t.id %>/revoke" class="inline">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <button type="submit" class="danger">Revoke</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>
+<%- include('partials/footer') %>

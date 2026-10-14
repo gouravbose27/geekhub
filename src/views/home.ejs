@@ -1,0 +1,94 @@
+<%- include('partials/header', { bodyClass: 'home' }) %>
+<section class="hero">
+  <div class="hero-text">
+    <p class="eyebrow">// version control, reimagined</p>
+    <h1>Geek<span>Hub</span></h1>
+    <p class="lead">Host public Git repositories and collaborate with other developers. Fetch. Commit. Ship.</p>
+    <% if (locals.user) { %>
+      <p class="status">Signed in as <strong><%= user.username %></strong></p>
+      <div class="cta"><a class="btn" href="/settings/tokens">Manage access tokens</a></div>
+    <% } else { %>
+      <div class="cta">
+        <a class="btn" href="/signup">Create an account</a>
+        <a class="btn ghost" href="/login">Sign in</a>
+      </div>
+    <% } %>
+  </div>
+
+  <div class="mascot" aria-hidden="true">
+    <svg viewBox="0 0 260 260" role="img" aria-label="Gitdog, the GeekHub mascot">
+      <defs>
+        <linearGradient id="fur" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#2b3a67"/>
+          <stop offset="1" stop-color="#141a33"/>
+        </linearGradient>
+        <linearGradient id="ear" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#7b2ff7"/>
+          <stop offset="1" stop-color="#2b1a5e"/>
+        </linearGradient>
+        <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="3" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      <ellipse class="shadow" cx="130" cy="244" rx="80" ry="8"/>
+
+      <g class="tail" filter="url(#glow)">
+        <path d="M188 214 C228 214 240 178 222 150" fill="none" stroke="#00e5ff" stroke-width="12" stroke-linecap="round"/>
+        <circle cx="222" cy="148" r="7" fill="#ff2bd6"/>
+      </g>
+
+      <path d="M70 232 C62 170 90 160 130 160 C170 160 198 170 190 232 Z" fill="url(#fur)" stroke="#00e5ff" stroke-width="2.5" filter="url(#glow)"/>
+      <rect x="84" y="224" width="30" height="14" rx="7" fill="#141a33" stroke="#00e5ff" stroke-width="2.5"/>
+      <rect x="146" y="224" width="30" height="14" rx="7" fill="#141a33" stroke="#00e5ff" stroke-width="2.5"/>
+      <path d="M118 175 L130 190 L142 175" fill="none" stroke="#00e5ff" stroke-width="2" opacity=".6"/>
+
+      <g class="ear-l">
+        <path d="M66 62 C32 56 20 112 40 138 C56 142 70 118 78 92 Z" fill="url(#ear)" stroke="#ff2bd6" stroke-width="2.5" filter="url(#glow)"/>
+      </g>
+      <g class="ear-r">
+        <path d="M194 62 C228 56 240 112 220 138 C204 142 190 118 182 92 Z" fill="url(#ear)" stroke="#ff2bd6" stroke-width="2.5" filter="url(#glow)"/>
+      </g>
+
+      <path d="M130 40 C178 40 202 78 198 116 C194 152 164 170 130 170 C96 170 66 152 62 116 C58 78 82 40 130 40 Z" fill="url(#fur)" stroke="#00e5ff" stroke-width="3" filter="url(#glow)"/>
+
+      <path d="M130 46 L130 70" stroke="#00e5ff" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+      <circle cx="130" cy="44" r="4" fill="#00e5ff" class="antenna"/>
+
+      <rect x="80" y="84" width="100" height="34" rx="17" fill="#07091a" stroke="#00e5ff" stroke-width="2.5" filter="url(#glow)"/>
+      <g class="eyes" filter="url(#glow)">
+        <circle cx="106" cy="101" r="9" fill="#00e5ff"/>
+        <circle cx="154" cy="101" r="9" fill="#00e5ff"/>
+        <circle cx="109" cy="98" r="3" fill="#fff"/>
+        <circle cx="157" cy="98" r="3" fill="#fff"/>
+      </g>
+
+      <ellipse cx="130" cy="142" rx="30" ry="22" fill="#e8ecff"/>
+      <ellipse cx="130" cy="130" rx="11" ry="8" fill="#07091a"/>
+      <ellipse cx="127" cy="128" rx="3" ry="2" fill="#fff" opacity=".7"/>
+      <path d="M130 138 L130 146 M130 146 C124 154 114 152 112 146 M130 146 C136 154 146 152 148 146" fill="none" stroke="#07091a" stroke-width="2.5" stroke-linecap="round"/>
+      <path class="tongue" d="M124 152 C124 168 136 168 136 152 Z" fill="#ff5c8a" stroke="#07091a" stroke-width="2"/>
+
+      <path d="M82 166 C110 182 150 182 178 166" fill="none" stroke="#ff2bd6" stroke-width="8" stroke-linecap="round" filter="url(#glow)"/>
+      <circle cx="130" cy="184" r="9" fill="#07091a" stroke="#ffd400" stroke-width="2.5"/>
+      <text x="130" y="188" text-anchor="middle" font-size="10" font-family="monospace" font-weight="700" fill="#ffd400">&lt;/&gt;</text>
+    </svg>
+  </div>
+</section>
+
+<section class="features">
+  <article>
+    <h3>Public repos</h3>
+    <p>Push code to the world and let others clone it in seconds.</p>
+  </article>
+  <article>
+    <h3>Token access</h3>
+    <p>Generate personal access tokens to authenticate from anywhere.</p>
+  </article>
+  <article>
+    <h3>Built to collaborate</h3>
+    <p>Work with other developers on a clean, fast, minimal platform.</p>
+  </article>
+</section>
+<%- include('partials/footer') %>
