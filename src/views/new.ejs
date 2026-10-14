@@ -1,0 +1,14 @@
+<%- include('partials/header') %>
+<h1>New repository</h1>
+<% if (error) { %><div class="alert error"><%= error %></div><% } %>
+<form method="post" action="/new" class="card">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <label>Name
+    <input name="name" required maxlength="100" pattern="[A-Za-z0-9._\-]+" value="<%= values.name %>">
+  </label>
+  <label>Description (optional)
+    <input name="description" maxlength="500" value="<%= values.description %>">
+  </label>
+  <button type="submit">Create repository</button>
+</form>
+<%- include('partials/footer') %>

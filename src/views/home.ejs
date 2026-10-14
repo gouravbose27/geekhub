@@ -6,11 +6,16 @@
     <p class="lead">Host public Git repositories and collaborate with other developers. Fetch. Commit. Ship.</p>
     <% if (locals.user) { %>
       <p class="status">Signed in as <strong><%= user.username %></strong></p>
-      <div class="cta"><a class="btn" href="/settings/tokens">Manage access tokens</a></div>
+      <div class="cta">
+        <a class="btn" href="/dashboard">Your repositories</a>
+        <a class="btn ghost" href="/explore">Explore</a>
+        <a class="btn ghost" href="/settings/tokens">Access tokens</a>
+      </div>
     <% } else { %>
       <div class="cta">
         <a class="btn" href="/signup">Create an account</a>
         <a class="btn ghost" href="/login">Sign in</a>
+        <a class="btn ghost" href="/explore">Explore</a>
       </div>
     <% } %>
   </div>

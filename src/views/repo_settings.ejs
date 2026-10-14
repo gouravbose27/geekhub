@@ -1,0 +1,46 @@
+<%- include('partials/header') %>
+<%- include('partials/repo_header') %>
+<h2>Collaborators</h2>
+<p>Collaborators can push to this repository. Only you can manage access or delete it.</p>
+<% if (error) { %><div class="alert error"><%= error %></div><% } %>
+
+<% const action = '/' + enc(repo.owner) + '/' + enc(repo.name) + '/settings'; %>
+<form method="post" action="<%= action %>/collaborators" class="card">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <label>Username
+    <input name="username" required maxlength="39">
+  </label>
+  <button type="submit">Add collaborator</button>
+</form>
+
+<% if (!collaborators.length) { %>
+  <p>No collaborators yet.</p>
+<% } else { %>
+  <table>
+    <thead><tr><th>User</th><th>Role</th><th></th></tr></thead>
+    <tbody>
+      <% collaborators.forEach(function (c) { %>
+        <tr>
+          <td><a href="/<%= enc(c.username) %>"><%= c.username %></a></td>
+          <td><%= c.role %></td>
+          <td>
+            <form method="post" action="<%= action %>/collaborators/<%= c.user_id %>/remove" class="inline">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <button type="submit" class="danger">Remove</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>
+
+<h2>Delete repository</h2>
+<form method="post" action="<%= action %>/delete" class="card">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <label>Type <code><%= repo.name %></code> to confirm
+    <input name="confirm" required autocomplete="off">
+  </label>
+  <button type="submit" class="danger">Delete this repository</button>
+</form>
+<%- include('partials/footer') %>

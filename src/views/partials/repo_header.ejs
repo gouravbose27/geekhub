@@ -1,0 +1,9 @@
+<h1><a href="/<%= enc(repo.owner) %>"><%= repo.owner %></a> / <%= repo.name %></h1>
+<% if (repo.description) { %><p><%= repo.description %></p><% } %>
+<nav class="tabs">
+  <a href="/<%= enc(repo.owner) %>/<%= enc(repo.name) %>"<% if (active === 'code') { %> class="active"<% } %>>Code</a>
+  <a href="/<%= enc(repo.owner) %>/<%= enc(repo.name) %>/commits"<% if (active === 'commits') { %> class="active"<% } %>>Commits</a>
+  <% if (owner) { %>
+    <a href="/<%= enc(repo.owner) %>/<%= enc(repo.name) %>/settings"<% if (active === 'settings') { %> class="active"<% } %>>Settings</a>
+  <% } %>
+</nav>

@@ -1,0 +1,14 @@
+<%- include('partials/header') %>
+<%- include('partials/repo_header') %>
+<% const root = '/' + enc(repo.owner) + '/' + enc(repo.name); %>
+<div class="card wide">
+  <pre class="message"><%= commit.message %></pre>
+  <p>
+    <%= commit.author %> &lt;<%= commit.email %>&gt; on <%= commit.date %><br>
+    commit <code><%= commit.sha %></code>
+    <% commit.parents.forEach(function (p) { %> · parent <a href="<%= root %>/commit/<%= p %>"><code><%= p.slice(0, 7) %></code></a><% }) %>
+  </p>
+</div>
+<pre class="diff"><% diffLines.forEach(function (l) { %><span class="<%= l.cls %>"><%= l.text %></span><% }) %></pre>
+<% if (commit.truncated) { %><p class="alert error">Diff truncated: too large to display in full.</p><% } %>
+<%- include('partials/footer') %>

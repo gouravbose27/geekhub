@@ -9,10 +9,12 @@
 </head>
 <body<% if (locals.bodyClass) { %> class="<%= bodyClass %>"<% } %>>
 <header class="site-header">
-  <a class="brand" href="/">GeekHub</a>
+  <a class="brand" href="<%= locals.user ? '/dashboard' : '/' %>">GeekHub</a>
   <nav>
     <button type="button" id="theme-toggle" class="theme-toggle">Dark</button>
+    <a href="/explore">Explore</a>
     <% if (locals.user) { %>
+      <a href="/dashboard">Dashboard</a>
       <a href="/settings/tokens"><%= user.username %></a>
       <form method="post" action="/logout" class="inline">
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">

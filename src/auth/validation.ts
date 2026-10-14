@@ -1,7 +1,7 @@
 // Usernames become URL segments (/:owner/:repo), so they must not collide with app routes.
 const RESERVED = new Set([
   'login', 'logout', 'signup', 'settings', 'static', 'api', 'admin', 'new', 'explore',
-  'search', 'users', 'user', 'repos', 'about', 'help', 'assets', 'public', 'git',
+  'search', 'users', 'user', 'repos', 'about', 'help', 'assets', 'public', 'git', 'dashboard',
 ]);
 
 const USERNAME_RE = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/;

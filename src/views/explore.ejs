@@ -1,0 +1,12 @@
+<%- include('partials/header') %>
+<h1>Explore repositories</h1>
+<form method="get" action="/explore" class="search">
+  <input type="search" name="q" value="<%= q %>" maxlength="100" placeholder="Search repositories">
+  <button type="submit">Search</button>
+</form>
+<%- include('partials/repo_list', { repos: repos }) %>
+<p class="pager">
+  <% if (page > 1) { %><a href="/explore?q=<%= enc(q) %>&amp;page=<%= page - 1 %>">&larr; Newer</a><% } %>
+  <% if (hasNext) { %><a href="/explore?q=<%= enc(q) %>&amp;page=<%= page + 1 %>">Older &rarr;</a><% } %>
+</p>
+<%- include('partials/footer') %>

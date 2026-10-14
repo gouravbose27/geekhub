@@ -1,0 +1,25 @@
+<%- include('partials/header') %>
+<%- include('partials/repo_header') %>
+<% const root = '/' + enc(repo.owner) + '/' + enc(repo.name); %>
+<% if (!commits.length) { %>
+  <p>No commits yet.</p>
+<% } else { %>
+  <h2>Commits on <%= ref %></h2>
+  <table>
+    <tbody>
+      <% commits.forEach(function (c) { %>
+        <tr>
+          <td><a href="<%= root %>/commit/<%= c.sha %>"><%= c.subject || '(no message)' %></a></td>
+          <td><%= c.author %></td>
+          <td><%= c.date %></td>
+          <td><code><%= c.shortSha %></code></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+  <p class="pager">
+    <% if (page > 1) { %><a href="<%= root %>/commits/<%= enc(ref) %>?page=<%= page - 1 %>">&larr; Newer</a><% } %>
+    <% if (hasNext) { %><a href="<%= root %>/commits/<%= enc(ref) %>?page=<%= page + 1 %>">Older &rarr;</a><% } %>
+  </p>
+<% } %>
+<%- include('partials/footer') %>

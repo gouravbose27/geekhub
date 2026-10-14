@@ -1,0 +1,16 @@
+<%- include('partials/header') %>
+<%- include('partials/repo_header') %>
+<% const root = '/' + enc(repo.owner) + '/' + enc(repo.name); %>
+<p class="crumbs">
+  <a href="<%= root %>/tree/<%= enc(ref) %>"><%= repo.name %></a>
+  <% crumbs.forEach(function (c) { %> / <a href="<%= root %>/tree/<%= enc(ref) %>/<%= encPath(c.path) %>"><%= c.name %></a><% }) %>
+  / <strong><%= fileName %></strong>
+</p>
+<% if (blob.kind === 'text') { %>
+  <pre class="code"><%= blob.content %></pre>
+<% } else if (blob.kind === 'binary') { %>
+  <p>Binary file (<%= blob.size %> bytes) not shown.</p>
+<% } else { %>
+  <p>File is too large to display (<%= blob.size %> bytes).</p>
+<% } %>
+<%- include('partials/footer') %>

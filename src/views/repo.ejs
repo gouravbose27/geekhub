@@ -1,0 +1,61 @@
+<%- include('partials/header') %>
+<%- include('partials/repo_header') %>
+<% const root = '/' + enc(repo.owner) + '/' + enc(repo.name); %>
+<% if (empty) { %>
+  <div class="card wide">
+    <p>This repository is empty. Push your first commit:</p>
+    <pre>git remote add origin <%= cloneUrl %>
+git push -u origin main</pre>
+    <p>Use a <a href="/settings/tokens">personal access token</a> as the password.</p>
+  </div>
+<% } else { %>
+  <div class="card wide">
+    <label>Clone
+      <input readonly value="<%= cloneUrl %>">
+    </label>
+  </div>
+
+  <div class="ref-bar">
+    <details>
+      <summary>Ref: <strong><%= ref %></strong></summary>
+      <ul class="ref-list">
+        <% refs.branches.forEach(function (b) { %><li>branch <a href="<%= root %>/tree/<%= enc(b) %>"><%= b %></a></li><% }) %>
+        <% refs.tags.forEach(function (t) { %><li>tag <a href="<%= root %>/tree/<%= enc(t) %>"><%= t %></a></li><% }) %>
+      </ul>
+    </details>
+    <a href="<%= root %>/commits/<%= enc(ref) %>">History</a>
+  </div>
+
+  <p class="crumbs">
+    <a href="<%= root %>/tree/<%= enc(ref) %>"><%= repo.name %></a>
+    <% crumbs.forEach(function (c) { %> / <a href="<%= root %>/tree/<%= enc(ref) %>/<%= encPath(c.path) %>"><%= c.name %></a><% }) %>
+  </p>
+
+  <table>
+    <tbody>
+      <% entries.forEach(function (e) {
+           const p = dirPath ? dirPath + '/' + e.name : e.name; %>
+        <tr>
+          <td>
+            <% if (e.type === 'tree') { %>
+              <a href="<%= root %>/tree/<%= enc(ref) %>/<%= encPath(p) %>"><%= e.name %>/</a>
+            <% } else if (e.type === 'blob') { %>
+              <a href="<%= root %>/blob/<%= enc(ref) %>/<%= encPath(p) %>"><%= e.name %></a>
+            <% } else { %>
+              <%= e.name %> (submodule)
+            <% } %>
+          </td>
+          <td class="size"><%= e.size === null ? '' : e.size + ' B' %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+  <% if (readme) { %>
+    <section class="readme">
+      <h2><%= readme.name %></h2>
+      <% if (readme.html !== null) { %><%- readme.html %><% } else { %><pre><%= readme.text %></pre><% } %>
+    </section>
+  <% } %>
+<% } %>
+<%- include('partials/footer') %>

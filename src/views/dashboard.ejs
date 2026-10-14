@@ -1,0 +1,8 @@
+<%- include('partials/header') %>
+<h1>Dashboard</h1>
+<p><a class="button" href="/new">New repository</a></p>
+<h2>Your repositories</h2>
+<%- include('partials/repo_list', { repos: owned }) %>
+<h2>Shared with you</h2>
+<%- include('partials/repo_list', { repos: shared }) %>
+<%- include('partials/footer') %>

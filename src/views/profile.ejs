@@ -1,0 +1,5 @@
+<%- include('partials/header') %>
+<h1><%= profile.username %></h1>
+<h2>Repositories</h2>
+<%- include('partials/repo_list', { repos: repos }) %>
+<%- include('partials/footer') %>

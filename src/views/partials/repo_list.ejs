@@ -1,0 +1,12 @@
+<% if (!repos.length) { %>
+  <p>No repositories.</p>
+<% } else { %>
+  <ul class="repo-list">
+    <% repos.forEach(function (r) { %>
+      <li>
+        <a href="/<%= enc(r.owner) %>/<%= enc(r.name) %>"><strong><%= r.owner %>/<%= r.name %></strong></a>
+        <% if (r.description) { %><p><%= r.description %></p><% } %>
+      </li>
+    <% }) %>
+  </ul>
+<% } %>
