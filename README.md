@@ -28,7 +28,7 @@ Configuration (environment variables):
 ## Usage
 
 1. Sign up, then create a repository at `/new`.
-2. Create a personal access token at `/settings/tokens`.
+2. Create a personal access token at `/settings/tokens`, optionally choosing an expiration date (00:00 UTC). The token list shows each expiry date or “Never”; expired tokens can no longer authenticate. Existing tokens keep no expiration.
 3. Push, using the token as the password (any username):
 
    ```

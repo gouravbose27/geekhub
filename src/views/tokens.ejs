@@ -15,6 +15,10 @@
   <label>Token name
     <input name="name" required maxlength="100" placeholder="e.g. laptop">
   </label>
+  <label>Expiration date (UTC)
+    <input type="date" name="expires_at" min="<%= minExpiryDate %>" value="<%= expiration %>">
+  </label>
+  <p>Expires at 00:00 UTC on this date. Leave blank for no expiration.</p>
   <button type="submit">Generate token</button>
 </form>
 
@@ -23,13 +27,14 @@
   <p>No tokens yet.</p>
 <% } else { %>
   <table>
-    <thead><tr><th>Name</th><th>Created</th><th>Last used</th><th></th></tr></thead>
+    <thead><tr><th>Name</th><th>Created</th><th>Last used</th><th>Expires (UTC)</th><th></th></tr></thead>
     <tbody>
       <% tokens.forEach(function (t) { %>
         <tr>
           <td><%= t.name %></td>
           <td><%= t.created_at %></td>
           <td><%= t.last_used_at || 'Never' %></td>
+          <td><%= t.expiresOn || 'Never' %><% if (t.expired) { %> (Expired)<% } %></td>
           <td>
             <form method="post" action="/settings/tokens/<%= t.id %>/revoke" class="inline">
               <input type="hidden" name="_csrf" value="<%= csrfToken %>">

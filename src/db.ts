@@ -62,6 +62,9 @@ const MIGRATIONS: string[] = [
   CREATE INDEX idx_password_reset_tokens_user ON password_reset_tokens(user_id);
   CREATE INDEX idx_password_reset_tokens_expires ON password_reset_tokens(expires_at);
   `,
+  `
+  ALTER TABLE access_tokens ADD COLUMN expires_at INTEGER;
+  `,
 ];
 
 export function migrate(db: DB): void {
