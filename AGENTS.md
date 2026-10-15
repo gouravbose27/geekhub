@@ -2,6 +2,17 @@
 
 General instructions for AI coding agents working in GeekHub. Role-specific agent instructions live in [docs/](docs/).
 
+## Role-Specific Instructions (mandatory)
+
+**Before making any code changes, you MUST read the relevant instruction file(s) in [docs/](docs/). This is non-negotiable.** If a task touches an area below, follow that file in addition to this one. If several apply, read all of them.
+
+| Area | File | Applies to |
+| --- | --- | --- |
+| Front end | [docs/frontend.instructions.md](docs/frontend.instructions.md) | `src/views/`, `public/` (EJS, CSS, browser JS) |
+| Back end | [docs/backend.instructions.md](docs/backend.instructions.md) | `src/` except `src/views/` (routes, auth, repos, git, db, config) |
+
+Check `docs/` for any newly added instruction files before starting work.
+
 ## Project
 
 GeekHub is a minimal GitHub-like app for hosting public Git repositories. See [PLAN.md](PLAN.md) for scope, data model, and permissions, and [README.md](README.md) for usage.
