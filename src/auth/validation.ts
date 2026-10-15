@@ -33,6 +33,17 @@ export function validateTokenName(value: string): string | null {
   return null;
 }
 
+export function validateTokenExpiry(value: string): string | null {
+  if (value === '') return null;
+  const timestamp = Date.parse(`${value}T00:00:00.000Z`);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value) || !Number.isFinite(timestamp) ||
+      new Date(timestamp).toISOString().slice(0, 10) !== value) {
+    return 'Enter a valid expiration date.';
+  }
+  if (timestamp <= Date.now()) return 'Expiration date must be in the future.';
+  return null;
+}
+
 export function safeNext(value: unknown): string {
   if (typeof value !== 'string') return '/';
   if (!value.startsWith('/') || value.startsWith('//') || /[\\\x00-\x1f]/.test(value)) return '/';

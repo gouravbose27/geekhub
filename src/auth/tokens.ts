@@ -7,6 +7,7 @@ export interface AccessToken {
   name: string;
   created_at: string;
   last_used_at: string | null;
+  expires_at: number | null;
 }
 
 export const TOKEN_PREFIX = 'ghp_';
@@ -16,12 +17,16 @@ export function hashToken(token: string): string {
   return crypto.createHash('sha256').update(token).digest('hex');
 }
 
-export function createToken(db: DB, userId: number, name: string): string {
+export function createToken(db: DB, userId: number, name: string, expiresAt: number | null = null): string {
+  if (expiresAt !== null && (!Number.isSafeInteger(expiresAt) || expiresAt <= Date.now())) {
+    throw new Error('Token expiration must be a future timestamp.');
+  }
   const token = TOKEN_PREFIX + crypto.randomBytes(32).toString('base64url');
-  db.prepare('INSERT INTO access_tokens (user_id, token_hash, name) VALUES (?, ?, ?)').run(
+  db.prepare('INSERT INTO access_tokens (user_id, token_hash, name, expires_at) VALUES (?, ?, ?, ?)').run(
     userId,
     hashToken(token),
     name,
+    expiresAt,
   );
   return token;
 }
@@ -29,7 +34,7 @@ export function createToken(db: DB, userId: number, name: string): string {
 export function listTokens(db: DB, userId: number): AccessToken[] {
   return db
     .prepare(
-      'SELECT id, name, created_at, last_used_at FROM access_tokens WHERE user_id = ? ORDER BY id DESC',
+      'SELECT id, name, created_at, last_used_at, expires_at FROM access_tokens WHERE user_id = ? ORDER BY id DESC',
     )
     .all(userId) as AccessToken[];
 }
@@ -47,9 +52,10 @@ export function authenticateToken(db: DB, token: string): User | undefined {
   const row = db
     .prepare(
       `SELECT u.id, u.username, u.email, t.id AS token_id FROM access_tokens t
-       JOIN users u ON u.id = t.user_id WHERE t.token_hash = ?`,
+       JOIN users u ON u.id = t.user_id WHERE t.token_hash = ?
+       AND (t.expires_at IS NULL OR t.expires_at > ?)`,
     )
-    .get(hash) as (User & { token_id: number }) | undefined;
+    .get(hash, Date.now()) as (User & { token_id: number }) | undefined;
   if (!row) return undefined;
   db.prepare("UPDATE access_tokens SET last_used_at = datetime('now') WHERE id = ?").run(row.token_id);
   return { id: row.id, username: row.username, email: row.email };
