@@ -83,7 +83,8 @@ describe('permission matrix', () => {
 
     const o = await login('olive');
     assert.equal((await o.post(path, { confirm: 'wrong' })).status, 400);
-    assert.equal((await o.post(path, { confirm: 'proj' })).status, 302);
+    assert.equal((await o.post(path, { confirm: 'proj' })).status, 400);
+    assert.equal((await o.post(path, { confirm: 'olive/proj' })).status, 302);
     assert.equal(fs.existsSync(repoPath(env.reposDir, 'olive', 'proj')), false);
     assert.equal((await env.client().req('/olive/proj')).status, 404);
     assert.equal((await refs('git-upload-pack')).status, 404);

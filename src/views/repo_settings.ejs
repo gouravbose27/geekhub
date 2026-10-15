@@ -38,8 +38,8 @@
 <h2>Delete repository</h2>
 <form method="post" action="<%= action %>/delete" class="card">
   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-  <label>Type <code><%= repo.name %></code> to confirm
-    <input name="confirm" required autocomplete="off">
+  <label>Type   <code><%= repo.owner %>/<%= repo.name %></code> to confirm
+      <input name="confirm" required autocomplete="off" placeholder="username/reponame">
   </label>
   <button type="submit" class="danger">Delete this repository</button>
 </form>

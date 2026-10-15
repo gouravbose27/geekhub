@@ -308,9 +308,9 @@ export function repoRouter(db: DB, opts: RepoRoutesOptions): Router {
   router.post('/:owner/:repo/settings/delete', requireAuth, (req, res) => {
     const c = ownerOnly(req, res);
     if (!c) return;
-    if (str(req.body.confirm) !== c.repo.name) {
+    if (str(req.body.confirm)     !== `${c.repo.owner}/${c.repo.name}`) {
       res.status(400);
-      return renderSettings(req, res, c.repo, { error: 'Type the repository name to confirm deletion.' });
+          return renderSettings(req, res, c.repo, { error: 'Type the repository as username/reponame to confirm deletion.' });
     }
     deleteRepo(db, opts.reposDir, c.repo);
     res.redirect('/dashboard');
